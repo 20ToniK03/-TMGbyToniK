@@ -223,16 +223,6 @@ def index():
                 font-size: 14px; -webkit-text-fill-color: #6a7a8e; background: none;
             }
             .header-controls { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
-            .stats {
-                display: flex; gap: 8px; font-size: 13px; color: #8b9bb5;
-                flex-wrap: wrap;
-            }
-            .stats span {
-                background: #141f2d; padding: 6px 12px; border-radius: 20px;
-                border: 1px solid #1e2a3a; white-space: nowrap;
-            }
-            .stats .processed-badge { background: #00b894; color: white; border-color: #00b894; }
-            .stats .history-badge { background: #6c5ce7; color: white; border-color: #6c5ce7; }
             .view-toggle {
                 display: flex; gap: 6px; background: #141f2d; padding: 4px;
                 border-radius: 10px; border: 1px solid #1e2a3a;
@@ -537,8 +527,6 @@ def index():
                 .header-controls {
                     flex-direction: column; align-items: stretch; width: 100%;
                 }
-                .stats { justify-content: center; gap: 6px; }
-                .stats span { font-size: 12px; padding: 5px 10px; }
                 .view-toggle { width: 100%; }
                 .view-toggle button { flex: 1; justify-content: center; }
                 .filters { grid-template-columns: 1fr; padding: 12px; gap: 8px; }
@@ -589,7 +577,6 @@ def index():
             @media (max-width: 380px) {
                 body { padding: 8px; }
                 .header h1 { font-size: 18px; }
-                .stats span { font-size: 11px; padding: 4px 8px; }
                 .view-toggle button { padding: 6px 10px; font-size: 12px; }
                 .slider-message { padding: 14px; }
                 .slider-message .message-text { font-size: 15px; }
@@ -622,13 +609,6 @@ def index():
             <div class="header">
                 <h1>➤ TMGbyToniK <small>сообщения из групп/каналов</small></h1>
                 <div class="header-controls">
-                    <div class="stats">
-                        <span>📊 <strong id="totalCount">0</strong></span>
-                        <span>📷 <strong id="mediaCount">0</strong></span>
-                        <span class="history-badge">📜 <strong id="historyCount">0</strong></span>
-                        <span class="processed-badge">✅ <strong id="processedCount">0</strong></span>
-                        <span id="sliderCounter" style="display:none;">📄 <strong id="currentIndex">0</strong>/<strong id="totalFiltered">0</strong></span>
-                    </div>
                     <div class="view-toggle">
                         <button id="viewSlider" class="active" onclick="setView('slider')">🎠 <span>Слайдер</span></button>
                         <button id="viewList" onclick="setView('list')">📋 <span>Список</span></button>
@@ -926,8 +906,10 @@ def index():
             function loadStats() {
                 fetchJson('/api/stats')
                     .then(data => {
-                        document.getElementById('historyCount').textContent = data.from_history || 0;
-                        document.getElementById('processedCount').textContent = data.processed || 0;
+                        const histEl = document.getElementById('historyCount');
+                        const procEl = document.getElementById('processedCount');
+                        if (histEl) histEl.textContent = data.from_history || 0;
+                        if (procEl) procEl.textContent = data.processed || 0;
                     })
                     .catch(error => console.error('Ошибка при загрузке статистики:', error));
             }
@@ -1196,15 +1178,25 @@ def index():
             }
 
             function updateStats() {
-                document.getElementById('totalCount').textContent = allMessages.length;
-                const mediaItems = allMessages.filter(msg => msg.media && msg.media.length > 0).length;
-                document.getElementById('mediaCount').textContent = mediaItems;
-                if (currentView === 'slider') {
-                    document.getElementById('sliderCounter').style.display = 'inline';
-                    document.getElementById('currentIndex').textContent = filteredMessages.length > 0 ? currentIndex + 1 : 0;
-                    document.getElementById('totalFiltered').textContent = filteredMessages.length;
-                } else {
-                    document.getElementById('sliderCounter').style.display = 'none';
+                const totalEl = document.getElementById('totalCount');
+                const mediaEl = document.getElementById('mediaCount');
+                const sliderCounter = document.getElementById('sliderCounter');
+                const currentIdx = document.getElementById('currentIndex');
+                const totalFiltered = document.getElementById('totalFiltered');
+
+                if (totalEl) totalEl.textContent = allMessages.length;
+                if (mediaEl) {
+                    const mediaItems = allMessages.filter(msg => msg.media && msg.media.length > 0).length;
+                    mediaEl.textContent = mediaItems;
+                }
+                if (sliderCounter && currentIdx && totalFiltered) {
+                    if (currentView === 'slider') {
+                        sliderCounter.style.display = 'inline';
+                        currentIdx.textContent = filteredMessages.length > 0 ? currentIndex + 1 : 0;
+                        totalFiltered.textContent = filteredMessages.length;
+                    } else {
+                        sliderCounter.style.display = 'none';
+                    }
                 }
             }
 
@@ -1214,7 +1206,6 @@ def index():
                 document.getElementById('viewList').classList.toggle('active', view === 'list');
                 document.getElementById('sliderView').style.display = view === 'slider' ? 'block' : 'none';
                 document.getElementById('listView').classList.toggle('active', view === 'list');
-                document.getElementById('sliderCounter').style.display = view === 'slider' ? 'inline' : 'none';
                 renderCurrentView();
                 updateStats();
             }
