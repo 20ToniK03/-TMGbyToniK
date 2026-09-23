@@ -293,11 +293,3 @@ PROXY_SECRET=dd887296385103b9cb48ea941f1d0b856e
 | Пустые теги Kev | Kev-сервер не запущен или упал. Проверь терминал 1 |
 | `Permission denied` при push | Используй Personal Access Token вместо пароля |
 | `start_all.bat` не находит Kev | Папки `kev` и `kev_client` должны лежать рядом, в одной директории |
-
-## Лицензия
-
-MIT.
-
-## Благодарности
-
-Kev — модель классификации. Telethon — Telegram API. Flask — веб-фреймворк. typesafe-sdk — клиент Kev.
