@@ -1,0 +1,21 @@
+# === Веб-интерфейс (main.py) ===
+flask>=3.0.0
+
+# === Telegram-бот (tmg.py) ===
+telethon>=1.36.0
+
+# === Клиент Kev (kev_filter.py) ===
+typesafe-sdk>=0.7.0
+
+# === Переменные окружения ===
+python-dotenv>=1.0.0
+
+# === Прокси для Telegram (SOCKS5/HTTP) ===
+python-socks[asyncio]>=2.4.4
+
+# === Кроссплатформенная работа с часовыми поясами (Windows) ===
+tzdata>=2024.1
+
+# === Транзитивные зависимости ===
+httpx>=0.27.0
+anyio>=4.0.0
