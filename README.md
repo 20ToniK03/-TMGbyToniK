@@ -20,7 +20,7 @@ https://github.com/jaredpalmer/kev
 
 - Автоматический сбор сообщений из всех групп и каналов Telegram
 - Скачивание медиа (фото, видео, документы)
-- Классификация каждого сообщения локальной моделью Kev: категория (tech / news / finance / spam и другие), важность (0.0 – 1.0), срочность (0.0 – 1.0)
+- Классификация каждого сообщения локальной моделью Kev: категория, важность (0.0 – 1.0), срочность (0.0 – 1.0)
 - Веб-интерфейс с двумя видами: слайдер и список
 - Фильтры: по группе, медиа, статусу, категории Kev, важности, срочности
 - Адаптивный дизайн — работает и на телефоне, и на ПК
@@ -49,30 +49,42 @@ https://github.com/jaredpalmer/kev
 ```bash
 git clone https://github.com/jaredpalmer/kev.git
 cd kev
+```
+
 Установи зависимости:
 
-bash
+```bash
 uv sync --extra serve
-Если uv не установлен — поставь его по инструкции: https://docs.astral.sh/uv/
+```
+
+Если `uv` не установлен — поставь его по инструкции: https://docs.astral.sh/uv/
 
 Проверь, что Kev запускается:
 
-bash
+```bash
 uv run --extra serve python -m kev.serve --run jaredpalmer/kev-0.5b --port 8009
-Дождись строки Uvicorn running on http://127.0.0.1:8009. Если увидел — Kev работает. Останови Ctrl+C и переходи к шагу 2.
+```
 
-Шаг 2 — клонируй этот проект
-bash
+Дождись строки `Uvicorn running on http://127.0.0.1:8009`. Если увидел — Kev работает. Останови `Ctrl+C` и переходи к шагу 2.
+
+### Шаг 2 — клонируй этот проект
+
+```bash
 git clone <URL_РЕПОЗИТОРИЯ>
 cd <ИМЯ_ПАПКИ>
-Шаг 3 — создай .env
-Скопируй .env.example в .env:
+```
 
-bash
+### Шаг 3 — создай `.env`
+
+Скопируй `.env.example` в `.env`:
+
+```bash
 copy .env.example .env
-Открой .env и заполни своими данными:
+```
 
-env
+Открой `.env` и заполни своими данными:
+
+```env
 TG_API_ID=12345678
 TG_API_HASH=0123456789abcdef0123456789abcdef
 TG_PHONE=+79991234567
@@ -88,177 +100,210 @@ KEV_MODEL=kev-latest
 
 FLASK_HOST=0.0.0.0
 FLASK_PORT=5000
-TG_API_ID, TG_API_HASH и TG_PHONE получи на https://my.telegram.org (API development tools).
+```
 
-Шаг 4 — установи зависимости
-bash
+`TG_API_ID`, `TG_API_HASH` и `TG_PHONE` получи на https://my.telegram.org (API development tools).
+
+### Шаг 4 — установи зависимости
+
+```bash
 pip install -r requirements.txt
-Запуск
-Способ 1 — автоматический (Windows)
-В папке проекта есть три .bat-скрипта. Двойной клик по каждому — и всё работает.
+```
 
-setup.bat — одноразовая установка всех зависимостей. Запусти один раз после клонирования. Проверяет наличие uv, Python, клонирует Kev, ставит пакеты.
+## Запуск
 
-start_all.bat — запускает все три сервиса сразу. Открывает три окна cmd:
+### Способ 1 — автоматический (Windows)
 
-Kev-сервер на порту 8009
+В папке проекта есть три `.bat`-скрипта. Двойной клик по каждому — и всё работает.
 
-Flask-интерфейс на порту 5000
+`setup.bat` — одноразовая установка всех зависимостей. Запусти один раз после клонирования. Проверяет наличие `uv`, `Python`, клонирует Kev, ставит пакеты.
 
-Telegram-бот
+`start_all.bat` — запускает все три сервиса сразу. Открывает три окна cmd: Kev-сервер на порту 8009, Flask-интерфейс на порту 5000, Telegram-бот.
 
 Скрипт проверяет, не заняты ли порты и не запущены ли уже процессы. Если что-то уже работает — новое окно не создаётся.
 
-stop_all.bat — останавливает все три сервиса. Убивает процессы по портам и по имени tmg.py.
+`stop_all.bat` — останавливает все три сервиса. Убивает процессы по портам и по имени `tmg.py`.
 
 Порядок использования:
+1. `setup.bat` — один раз
+2. `start_all.bat` — каждый раз при запуске
+3. `stop_all.bat` — если нужно всё выключить
 
-setup.bat — один раз
+После `start_all.bat` открой http://127.0.0.1:5000
 
-start_all.bat — каждый раз при запуске
+### Способ 2 — вручную, три терминала
 
-stop_all.bat — если нужно всё выключить
+Если `.bat` не подходят (Linux, macOS, или нужен контроль) — открывай три терминала.
 
-После start_all.bat открой http://127.0.0.1:5000
+**Терминал 1 — Kev-сервер:**
 
-Способ 2 — вручную, три терминала
-Если .bat не подходят (Linux, macOS, или нужен контроль) — открывай три терминала.
-
-Терминал 1 — Kev-сервер:
-
-bash
+```bash
 cd /path/to/kev
 uv run --extra serve python -m kev.serve --run jaredpalmer/kev-0.5b --port 8009
-Дождись строки Uvicorn running on http://127.0.0.1:8009.
+```
 
-Терминал 2 — Flask (веб-интерфейс):
+Дождись строки `Uvicorn running on http://127.0.0.1:8009`.
 
-bash
+**Терминал 2 — Flask (веб-интерфейс):**
+
+```bash
 cd /path/to/kev_client
 python main.py
+```
+
 Открой в браузере http://127.0.0.1:5000
 
-Терминал 3 — Telegram-бот:
+**Терминал 3 — Telegram-бот:**
 
-bash
+```bash
 cd /path/to/kev_client
 python tmg.py
-При первом запуске Telethon попросит код подтверждения из Telegram. Введи его в терминале. Сессия сохранится в session_name.session, при следующих запусках код не потребуется.
+```
 
-Способ 3 — отдельные команды
-Только Kev-сервер:
+При первом запуске Telethon попросит код подтверждения из Telegram. Введи его в терминале. Сессия сохранится в `session_name.session`, при следующих запусках код не потребуется.
 
-bash
+### Способ 3 — отдельные команды
+
+**Только Kev-сервер:**
+
+```bash
 cd /path/to/kev
 uv run --extra serve python -m kev.serve --run jaredpalmer/kev-0.5b --port 8009
-Только Flask:
+```
 
-bash
+**Только Flask:**
+
+```bash
 cd /path/to/kev_client
 python main.py
-Только бот:
+```
 
-bash
+**Только бот:**
+
+```bash
 cd /path/to/kev_client
 python tmg.py
-Структура
-text
-kev_client/
-├── main.py                 # Flask-сервер, API, HTML-интерфейс
-├── tmg.py                  # Telegram-бот (сборщик сообщений)
-├── kev_filter.py           # Клиент Kev (классификация)
-├── requirements.txt        # Python-зависимости
-├── setup.bat               # Одноразовая установка
-├── start_all.bat           # Запуск всех сервисов
-├── stop_all.bat            # Остановка всех сервисов
-├── .env                    # Секреты (НЕ коммитить)
-├── .env.example            # Шаблон конфигурации
-├── .gitignore              # Список игнорируемых файлов
-├── categories.json         # Категории для Kev (создаётся автоматически)
-├── telegram_messages.json  # Лента сообщений
-├── processed_ids.json      # ID обработанных сообщений
-├── media/                  # Скачанные медиа
-└── session_name.session    # Сессия Telegram
-Настройка категорий
-Категории Kev читаются из categories.json. Открой блокнотом и отредактируй:
+```
 
-json
+## Структура
+
+```
+kev_client/
+|-- main.py # Flask-сервер, API, HTML-интерфейс
+|-- tmg.py # Telegram-бот (сборщик сообщений)
+|-- kev_filter.py # Клиент Kev (классификация)
+|-- requirements.txt # Python-зависимости
+|-- setup.bat # Одноразовая установка
+|-- start_all.bat # Запуск всех сервисов
+|-- stop_all.bat # Остановка всех сервисов
+|-- .env # Секреты (НЕ коммитить)
+|-- .env.example # Шаблон конфигурации
+|-- .gitignore # Список игнорируемых файлов
+|-- categories.json # Категории для Kev (создаётся автоматически)
+|-- telegram_messages.json # Лента сообщений
+|-- processed_ids.json # ID обработанных сообщений
+|-- media/ # Скачанные медиа
+|-- session_name.session # Сессия Telegram
+```
+
+## Настройка категорий
+
+Категории Kev читаются из `categories.json`. Открой блокнотом и отредактируй:
+
+```json
 {
-  "categories": {
-    "tech": "💻 Технологии",
-    "news": "📰 Новости",
-    "finance": "💰 Финансы",
-    "spam": "🚫 Спам",
-    "personal": "👤 Личное",
-    "other": "📦 Другое"
+  ```categories``: {
+    ```tech``: ```💻 Технологии``,
+    ```news``: ```📰 Новости``,
+    ```finance``: ```💰 Финансы``,
+    ```spam``: ```🚫 Спам``,
+    ```personal``: ```👤 Личное``,
+    ```other``: ```📦 Другое``
   }
 }
-Правила: ключ — латиница без пробелов (crypto, ai, politics), значение — любое отображаемое имя с эмодзи, other обязательно как fallback. После правки перезапусти Flask и бота. Kev автоматически начнёт классифицировать сообщения по новым категориям.
+```
 
-API
-Метод	Эндпоинт	Описание
-GET	/api/messages?page=1&per_page=20	Сообщения с пагинацией
-GET	/api/messages_by_group?chat_id=X	Все сообщения из группы
-GET	/api/important?threshold=0.7	Только важные сообщения
-GET	/api/kev_categories	Список категорий Kev
-GET	/api/stats	Статистика
-GET	/api/groups	Список групп
-POST	/api/clear	Очистить ленту
-POST	/api/clear_media	Очистить папку с медиа
-GET	/media/<filename>	Отдать медиафайл
-Безопасность
+Правила: ключ — латиница без пробелов (`crypto`, `ai`, `politics`), значение — любое отображаемое имя с эмодзи, `other` обязательно как fallback. После правки перезапусти Flask и бота. Kev автоматически начнёт классифицировать сообщения по новым категориям.
+
+## API
+
+| Метод | Эндпоинт | Описание |
+| :--- | :--- | :--- |
+| GET | `/api/messages?page=1&per_page=20` | Сообщения с пагинацией |
+| GET | `/api/messages_by_group?chat_id=X` | Все сообщения из группы |
+| GET | `/api/important?threshold=0.7` | Только важные сообщения |
+| GET | `/api/kev_categories` | Список категорий Kev |
+| GET | `/api/stats` | Статистика |
+| GET | `/api/groups` | Список групп |
+| POST | `/api/clear` | Очистить ленту |
+| POST | `/api/clear_media` | Очистить папку с медиа |
+| GET | `/media/<filename>` | Отдать медиафайл |
+
+## Безопасность
+
 Никогда не выкладывай в публичный репозиторий:
 
-Файл	Почему
-.env	API-ключи, телефон, пароли прокси
-session_name.session	Ключ доступа к Telegram без пароля
-session_name.session-journal	То же самое
-telegram_messages.json	Вся переписка из групп
-processed_ids.json	ID обработанных сообщений
-media/	Личные фото и видео
-categories.json	Твои персональные интересы
-Все они добавлены в .gitignore.
+| Файл | Почему |
+| :--- | :--- |
+| `.env` | API-ключи, телефон, пароли прокси |
+| `session_name.session` | Ключ доступа к Telegram без пароля |
+| `session_name.session-journal` | То же самое |
+| `telegram_messages.json` | Вся переписка из групп |
+| `processed_ids.json` | ID обработанных сообщений |
+| `media/` | Личные фото и видео |
+| `categories.json` | Твои персональные интересы |
 
-Если случайно залил в GitHub: заверши все сессии в Telegram через Настройки → Устройства, смени пароль 2FA, удали файлы из репозитория командой git rm --cached <файл>, сделай коммит и пуш. Лучше всего — удалить репозиторий и создать заново, потому что файлы остаются в истории Git.
+Все они добавлены в `.gitignore`.
 
-Прокси
-Если Telegram блокируется провайдером — настрой прокси в .env.
+Если случайно залил в GitHub: заверши все сессии в Telegram через Настройки → Устройства, смени пароль 2FA, удали файлы из репозитория командой `git rm --cached <файл>`, сделай коммит и пуш. Лучше всего — удалить репозиторий и создать заново, потому что файлы остаются в истории Git.
+
+## Прокси
+
+Если Telegram блокируется провайдером — настрой прокси в `.env`.
 
 SOCKS5:
 
-env
+```env
 PROXY_TYPE=socks5
 PROXY_HOST=185.22.44.11
 PROXY_PORT=1080
 PROXY_USER=myuser
 PROXY_PASS=mypassword
 PROXY_RDNS=true
+```
+
 HTTP:
 
-env
+```env
 PROXY_TYPE=http
 PROXY_HOST=185.22.44.11
 PROXY_PORT=8080
 PROXY_USER=
 PROXY_PASS=
+```
+
 MTProto:
 
-env
+```env
 PROXY_TYPE=mtproto
 PROXY_HOST=proxy.example.com
 PROXY_PORT=443
 PROXY_SECRET=dd887296385103b9cb48ea941f1d0b856e
-Если PROXY_TYPE пустой — бот работает напрямую.
+```
 
-Решение проблем
-Симптом	Решение
-uv: command not found	Добавь путь к папке с uv в PATH
-TimeoutError при старте бота	Включи VPN или настрой прокси в .env
-ZoneInfoNotFoundError	Установи pip install tzdata
-ModuleNotFoundError: fcntl	Ты на Windows — обнови tmg.py до кроссплатформенной версии
-Kev не отвечает	Проверь, запущен ли сервер на порту 8009
-Порт 5000 занят	Смени FLASK_PORT в .env
-Порт 8009 занят	Закрой старое окно Kev или убей процесс через Диспетчер задач
-Пустые теги Kev	Kev-сервер не запущен или упал. Проверь терминал 1
-Permission denied при push	Используй Personal Access Token вместо пароля
-start_all.bat открывает лишние окна	Проверь, что порты 8009 и 5000 свободны. Скрипт не создаёт дубликаты
+Если `PROXY_TYPE` пустой — бот работает напрямую.
+
+## Решение проблем
+
+| Симптом | Решение |
+| :--- | :--- |
+| `uv: command not found` | Добавь путь к папке с `uv` в PATH |
+| `TimeoutError` при старте бота | Включи VPN или настрой прокси в `.env` |
+| `ZoneInfoNotFoundError` | Установи `pip install tzdata` |
+| `ModuleNotFoundError: fcntl` | Ты на Windows — обнови `tmg.py` до кроссплатформенной версии |
+| Kev не отвечает | Проверь, запущен ли сервер на порту 8009 |
+| Порт 5000 занят | Смени `FLASK_PORT` в `.env` |
+| Порт 8009 занят | Закрой старое окно Kev или убей процесс через Диспетчер задач |
+| Пустые теги Kev | Kev-сервер не запущен или упал. Проверь терминал 1 |
+| `Permission denied` при push | Используй Personal Access Token вместо пароля |
+| `start_all.bat` открывает лишние окна | Проверь, что порты 8009 и 5000 свободны. Скрипт не создаёт дубликаты |
